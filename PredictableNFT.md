@@ -64,6 +64,8 @@ contract PredictableNFTTest is Test {
 ```
 
 # Hint
+- There is a mint trasaction, you can debug it with foundry:
+  `cast run 0x21432653a0be2b3b45a18511b1a1226dd4a72b72301753653bf231f00b811263 --debug --rpc-url "https://rpc.ankr.com/eth_sepolia" --quick`
 - You can use the decompiler on https://sepolia.etherscan.io/bytecode-decompiler?a=0x3D7C37943cF411BD4d52D50735B110B4384F9ae7
 - Or refer to the source code at the end.
 
