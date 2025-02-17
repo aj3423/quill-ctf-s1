@@ -10,7 +10,7 @@ https://sepolia.etherscan.io/address/0x3D7C37943cF411BD4d52D50735B110B4384F9ae7
 
 # The Goal
 Analyze the contract's bytecode and find out its weakness.
-You have 1 ether to mint 1 token, make sure to mint a Superior one.
+You have 0.01 ether to mint 1 token, make sure to mint a Superior one.
 You can wait and mint it on the right block.
 
 # Foundry setup:
@@ -100,7 +100,7 @@ contract PredictableNFT {
 	mapping(uint => uint) public tokens; // map of: tokenId => rank
 
 	function mint() external payable returns(uint) {
-		require(msg.value == 1 ether, "show me the money");
+		require(msg.value == 0.01 ether, "show me the money");
 
 		id += 1;
 
