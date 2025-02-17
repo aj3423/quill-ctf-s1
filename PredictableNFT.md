@@ -6,7 +6,7 @@ In this game, there are 3 possible NFT ranks: Common(1), Rare(2), Superior(3).
 
 Their randomization algorithm is weak, making it possible to predict the minting result.
 The contract:
-https://eth-goerli.blockscout.com/address/0xFD3CbdbD9D1bBe0452eFB1d1BFFa94C8468A66fC
+[https://eth-goerli.blockscout.com/address/0xFD3CbdbD9D1bBe0452eFB1d1BFFa94C8468A66fC](https://sepolia.etherscan.io/address/0x8cC29Bb28f6e789C163d230F0B99652cDD51b794)
 
 # The Goal
 Analyze the contract's bytecode and find out its weakness.
