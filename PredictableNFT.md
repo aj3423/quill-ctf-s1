@@ -6,7 +6,7 @@ In this game, there are 3 possible NFT ranks: Common(1), Rare(2), Superior(3).
 
 Their randomization algorithm is weak, making it possible to predict the minting result.
 The contract:
-https://sepolia.etherscan.io/address/0x8cC29Bb28f6e789C163d230F0B99652cDD51b794
+https://sepolia.etherscan.io/address/0x3D7C37943cF411BD4d52D50735B110B4384F9ae7
 
 # The Goal
 Analyze the contract's bytecode and find out its weakness.
@@ -27,9 +27,9 @@ contract PredictableNFTTest is Test {
 
 	function setUp() public {
 		vm.createSelectFork("https://rpc.ankr.com/eth_sepolia");
-		vm.deal(hacker, 1 ether);
+		vm.deal(hacker, 0.01 ether);
 
-		nft = address(0x8cC29Bb28f6e789C163d230F0B99652cDD51b794);
+		nft = address(0x3D7C37943cF411BD4d52D50735B110B4384F9ae7);
 	}
 
 	function test() public {
@@ -64,7 +64,7 @@ contract PredictableNFTTest is Test {
 ```
 
 # Hint
-- You can use the decompiler on https://sepolia.etherscan.io/bytecode-decompiler?a=0x8cC29Bb28f6e789C163d230F0B99652cDD51b794
+- You can use the decompiler on https://sepolia.etherscan.io/bytecode-decompiler?a=0x3D7C37943cF411BD4d52D50735B110B4384F9ae7
 - Or refer to the source code at the end.
 
 
