@@ -1,4 +1,4 @@
-# Goal
+# The goal
 
 You need to write a smart contract that accepts two unsigned integers as inputs. The contract should return 1 if the input numbers are equal; otherwise, it should return a different number.
 
