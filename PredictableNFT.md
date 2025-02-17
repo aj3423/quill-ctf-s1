@@ -64,7 +64,7 @@ contract PredictableNFTTest is Test {
 ```
 
 # Hint
-- You can use the decompiler on "https://goerli.etherscan.io/address/0xFD3CbdbD9D1bBe0452eFB1d1BFFa94C8468A66fC#code"
+- You can use the decompiler on https://sepolia.etherscan.io/bytecode-decompiler?a=0x8cC29Bb28f6e789C163d230F0B99652cDD51b794
 - Or refer to the source code at the end.
 
 
