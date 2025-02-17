@@ -2,16 +2,18 @@
 Before the Oracles, it was difficult to generate random numbers. People had to use `sha3(block.number)` or other built-in variables to simulate the randomness.
 
 # The predictable NFT game
-There is a web game, you can spend 1 ether to "mint" an NFT token, there're 3 possible ranks of it: Common(1), Rare(2), Superior(3).
+In this game, there are 3 possible NFT ranks: Common(1), Rare(2), Superior(3).
 
-As a hacker, you spot their weak randomness algorithm, you can predict the minting result and always mint the Superior ones, maybe sell them on the market to profit.
-
-You find the underlying contract of this game, which is `0xFD3CbdbD9D1bBe0452eFB1d1BFFa94C8468A66fC` on **goerli testnet**, it isn't open source but who needs it anyway.
+Their randomization algorithm is weak, making it possible to predict the minting result.
+The contract:
+https://eth-goerli.blockscout.com/address/0xFD3CbdbD9D1bBe0452eFB1d1BFFa94C8468A66fC
 
 # The Goal
-You have only 1 ether to mint 1 token, make sure mint a Superior one. You can wait and do it on the right block.
+Analyze the contract's bytecode and find out its weakness.
+You have 1 ether to mint 1 token, make sure to mint a Superior one.
+You can wait and mint it on the right block.
 
-# Foundry setUp:
+# Foundry setup:
 ```solidity
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^ 0.8.19;
@@ -24,9 +26,10 @@ contract PredictableNFTTest is Test {
 	address hacker = address(0x1234);
 
 	function setUp() public {
-		vm.createSelectFork("goerli");
+		vm.createSelectFork("https://rpc.ankr.com/eth_sepolia");
 		vm.deal(hacker, 1 ether);
-		nft = address(0xFD3CbdbD9D1bBe0452eFB1d1BFFa94C8468A66fC);
+
+		nft = address(0x8cC29Bb28f6e789C163d230F0B99652cDD51b794);
 	}
 
 	function test() public {
@@ -60,14 +63,13 @@ contract PredictableNFTTest is Test {
 
 ```
 
-
 # Hint
-1. Use the decompiler on "https://goerli.etherscan.io/address/0xFD3CbdbD9D1bBe0452eFB1d1BFFa94C8468A66fC#code"
-2. In the decompilation result, `stor0` means "storage slot 0".
+- You can use the decompiler on "https://goerli.etherscan.io/address/0xFD3CbdbD9D1bBe0452eFB1d1BFFa94C8468A66fC#code"
+- Or refer to the source code at the end.
 
 
 # Solution
-The solution code that to be inserted at the `---- hacking time ----`:
+`---- hacking time ----`:
 ```solidity
 			(, bytes memory ret) = nft.call(abi.encodeWithSignature(
 				"id()"
@@ -87,7 +89,7 @@ The solution code that to be inserted at the `---- hacking time ----`:
 			}
 ```
 
-# This should remain hidden, it's the underlying source code 
+# The source code of that contract
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^ 0.8.19;
@@ -124,3 +126,5 @@ contract PredictableNFT {
 	}
 }
 ```
+
+
