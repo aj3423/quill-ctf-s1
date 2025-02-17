@@ -81,7 +81,7 @@ contract PredictableNFTTest is Test {
 			))) % 100;
 
 			if(score > 90) {
-				(, bytes memory ret) = nft.call{value: 1 ether}(abi.encodeWithSignature(
+				(, bytes memory ret) = nft.call{value: 0.01 ether}(abi.encodeWithSignature(
 					"mint()"
 				));
 				mintedId = uint(bytes32(ret));
