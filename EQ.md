@@ -1,80 +1,15 @@
-# Analysis:
-We can use storage to compare number `A` and `B`, the pseudo code:
-- `slot[B] = 0`
-- `slot[A] = 1`
-- `return slot[B]`
+# Goal
 
-And some tricks:
+You need to write a smart contract that accepts two unsigned integers as inputs. The contract should return 1 if the input numbers are equal; otherwise, it should return a different number.
 
-- `push1 1`  -> `chainid`,        because `1` is banned
-- `push1 4`  -> `callvalue`,      bacause `4` is banned
-- `push1 0`  -> `returndatasize`, for saving 1 byte
-- The length of runtime code is 0x13 which is banned, pad two bytes `ffff` at the end to make it 0x15 bytes long, which is not banned.
-- Also add 1 byte `ff` to deployment code, to prevent runtime code start from banned offset `0x09`.
+Limitations:
+- Most arithmetic opcodes are banned.
+- If possible, try to use `pragma solidity 0.8.7;`, it doesn't support `PUSH0`, making it more difficult.
 
+# Foundry setup
 
-# Runtime code
-
-| bytes | Mnemonic       | Stack          | Comment         |
-| -     | -              | -              | -               |
-| 6024  | push1 0x24     | [0x24          | get B as arg 1  |
-| 35    | calldataload   | [B             |                 |
-| 80    | dup1           | [B, B          |                 |
-|
-| 3D    | returndatasize | [B, B, 0       |                 |
-| 90    | swap1          | [B, 0, B       |                 |
-| 55    | sstore         | [B             | slot[B] = 0     |
-|
-| 34    | callvalue      | [B, 4          | get A as arg 0  |
-| 35    | calldataload   | [B, A          |                 |
-|
-| 46    | chainid        | [B, A, 1       |                 |
-| 90    | swap1          | [B, 1, A       |                 |
-| 55    | sstore         | [B             | slot[A] = 1     |
-|
-| 54    | sload          | [slot[B]       | read slot[B]    |
-| 3d    | returndatasize | [slot[B], 0    |                 |
-| 52    | mstore         | [              |                 |
-|
-| 6020  | push1 0x20     | [0x20          | return          |
-| 3d    | returndatasize | [0x20, 0       |                 |
-| f3    | return         |                |                 |
-| ffff  |                |                |                 |
-
-
-Runtime code bytes:
-```
-602435803D90553435469055543d5260203df3ffff
-```
-
-# deployment code
-
-| bytes | Mnemonic       | Stack                | Comment                        |
-| -     | -              | -                    | -                              |
-| 6015  | push1 0x15     | [len                 | runtime_code.len == 0x15       |
-| 80    | dup1           | [len, len            |                                |
-| 600a  | push1 0a       | [len, len, offset    | runtime_code.offset == 0xa     |
-| 3d    | returndatasize | [len, len, offset, 0 |                                |
-| 39    | codecopy       | [len                 | copy runtime_code to memory[0] |
-| 3d    | returndatasize | [len, 0              |                                |
-| f3    | return         |                      |                                |
-| ff    | invalid        |                      | add this byte to make rumtime offset to be `0x0a` instad of `9`, which is banned |
-
-
-Deployment code bytes:
-```
-601580600a3d393df3ff
-```
-
-# The solution code 
-`deployment code` + `runtime code` :
-```
-601580600a3d393df3ff602435803D90553435469055543d5260203df3ffff
-(31 bytes)
-```
-
-# POC
 ```solidity
+
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
@@ -110,10 +45,11 @@ contract EQ is Test {
             "https://rpc.ankr.com/eth"
         );
         address isNumbersEQContractTemp;
+
         // solution - your bytecode
-        bytes
-            memory bytecode = hex"601580600a3d393df3ff602435803D90553435469055543d5260203df3ffff"; // TODO:
+        bytes memory bytecode =
         //
+
         require(bytecode.length < 40, "try harder!");
         for (uint i; i < bytecode.length; i++) {
             for (uint a; a < badOpcodes.length; a++) {
@@ -158,3 +94,10 @@ contract EQ is Test {
 }
 
 ```
+
+
+# Solutions
+- https://yanhuijessica.github.io/Chictf-Writeups/wargames/quillctf/assert_equal/#proof-of-concept
+- https://github.com/Kaiziron/quill-ctf-writeup/blob/main/assert-equal.md
+- https://github.com/aj3423/quill-ctf-s1/blob/master/EQ.md
+
